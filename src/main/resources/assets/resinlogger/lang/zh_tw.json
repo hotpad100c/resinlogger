@@ -10,5 +10,6 @@
   "log.block_prevented_generation": "× 位於 %s 的方塊 (%s) 阻止了生成，生成失敗，繼續。",
   "log.attempt_separator": " |--------------------------------------|",
   "log.generation_failed": "× 這次生成失敗了！",
-  "log.generation_successed": "√ 這次生成成功了！"
+  "log.generation_success": "√ 這次生成成功了！",
+  "log.generation_summary": "- 嘗試了 %s 次，生成了 %s 個樹脂，%s 個樹脂生成失敗。"
 }

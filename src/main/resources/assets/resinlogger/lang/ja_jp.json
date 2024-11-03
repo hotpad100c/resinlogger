@@ -10,5 +10,6 @@
   "log.block_prevented_generation": "× %s のブロック (%s) が生成を妨げました。生成失敗、続行します。",
   "log.attempt_separator": " |--------------------------------------|",
   "log.generation_failed": "× 今回の生成は失敗しました！",
-  "log.generation_successed": "√ 今回の生成は成功しました!"
+  "log.generation_success": "√ 今回の生成は成功しました!",
+  "log.generation_summary": "- %s 回試行し、%s 個の樹脂を生成しました。%s 個の樹脂の生成に失敗しました。"
 }

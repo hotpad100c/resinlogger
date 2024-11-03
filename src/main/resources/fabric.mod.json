@@ -3,13 +3,13 @@
 	"id": "resinlogger",
 	"version": "${version}",
 	"name": "ResinLogger",
-	"description": "Simulate resin spawning",
+	"description": "Simulate resin generation",
 	"authors": [
 		"Ryan100c"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/hotpad100c/resinlogger",
+		"sources": "https://github.com/hotpad100c/resinlogger"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/resinlogger/icon.png",
@@ -27,7 +27,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.16.9",
-		"minecraft": "~1.21.3",
+		"minecraft": "~1.21.4-alpha.24.44.a",
 		"java": ">=21",
 		"fabric-api": "*"
 	},

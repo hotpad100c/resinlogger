@@ -10,5 +10,6 @@
   "log.block_prevented_generation": "× 位于 %s 之塊 (%s) 阻樹脂，欲産而不成，復繼之。",
   "log.attempt_separator": " |--------------------------------------|",
   "log.generation_failed": "× 欲産樹脂而未能成！",
-  "log.generation_successed": "√ 樹脂已産成!"
+  "log.generation_success": "√ 樹脂已産成!",
+  "log.generation_summary": "- 試産 %s 回，成 %s 樹脂，而敗 %s 樹脂。"
 }

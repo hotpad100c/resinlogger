@@ -11,13 +11,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MultifaceBlock;
+import net.minecraft.block.entity.CreakingHeartBlockEntity;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.PlainTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
@@ -28,9 +27,6 @@ import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.*;
-import java.util.Optional;
 
 public class ResinLogger implements ModInitializer {
 	public static final String MOD_ID = "resinlogger";
@@ -58,31 +54,74 @@ public class ResinLogger implements ModInitializer {
 
 	private void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
 		// 注册命令 `/broadcast`
-		dispatcher.register(CommandManager.literal("simulateGenerateResin")
+		dispatcher.register(CommandManager.literal("simulateResinGeneration")
 				.then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
 						.executes(
 								context -> {
-									return findResinGenerationPos(context.getSource().getWorld(),
+									findResinGenerationPos(context.getSource().getWorld(),
 											BlockPosArgumentType.getBlockPos(context,"pos"),
 											1,
 											false);
+									return 1;
 								})
 						.then(CommandManager.argument("count", IntegerArgumentType.integer())
 								.executes(
 										context -> {
-									return findResinGenerationPos(context.getSource().getWorld(),
+									findResinGenerationPos(context.getSource().getWorld(),
 											BlockPosArgumentType.getBlockPos(context,"pos"),
 											IntegerArgumentType.getInteger(context,"count"),
 											false);
-								})
+											return 1;
+										})
 								.then(CommandManager.argument("resultOnly", BoolArgumentType.bool())
 									.executes(
 											context -> {
-										return findResinGenerationPos(context.getSource().getWorld(),
+										findResinGenerationPos(context.getSource().getWorld(),
 												BlockPosArgumentType.getBlockPos(context,"pos"),
 												IntegerArgumentType.getInteger(context,"count"),
 												BoolArgumentType.getBool(context,"resultOnly"));
-									})
+												return 1;
+											})
+								)
+						)
+				)
+		);
+		dispatcher.register(CommandManager.literal("simulateResinGenerationForCreakingHeartsInArea")
+				.then(CommandManager.argument("pos1", BlockPosArgumentType.blockPos())
+						.then(CommandManager.argument("pos2", BlockPosArgumentType.blockPos())
+								.executes(context -> {
+									ServerCommandSource source = context.getSource();
+									World world = source.getWorld();
+									BlockPos pos1 = BlockPosArgumentType.getBlockPos(context, "pos1");
+									BlockPos pos2 = BlockPosArgumentType.getBlockPos(context, "pos2");
+									findResinGenerationPosArea(world, pos1, pos2, 1, true);
+
+									return 1;
+								})
+								.then(CommandManager.argument("count", IntegerArgumentType.integer())
+										.executes(context -> {
+											ServerCommandSource source = context.getSource();
+											World world = source.getWorld();
+											BlockPos pos1 = BlockPosArgumentType.getBlockPos(context, "pos1");
+											BlockPos pos2 = BlockPosArgumentType.getBlockPos(context, "pos2");
+											int count = IntegerArgumentType.getInteger(context,"count");
+
+											findResinGenerationPosArea(world, pos1, pos2, count, true);
+
+											return 1;
+										})
+										.then(CommandManager.argument("resultOnly", BoolArgumentType.bool())
+												.executes(context -> {
+													ServerCommandSource source = context.getSource();
+													World world = source.getWorld();
+													BlockPos pos1 = BlockPosArgumentType.getBlockPos(context, "pos1");
+													BlockPos pos2 = BlockPosArgumentType.getBlockPos(context, "pos2");
+													int count = IntegerArgumentType.getInteger(context,"count");
+													Boolean resultOnly = BoolArgumentType.getBool(context,"resultOnly");
+													findResinGenerationPosArea(world, pos1, pos2, count, resultOnly);
+													return 1;
+												})
+										)
 								)
 						)
 				)
@@ -96,7 +135,34 @@ public class ResinLogger implements ModInitializer {
 		world.getPlayers().forEach(player -> player.sendMessage(text, overlay));
 
 	}
-	private int findResinGenerationPos(World world, BlockPos p,int times, Boolean resultOnly) {
+	private void findResinGenerationPosArea(World world, BlockPos pos1, BlockPos pos2, int times, boolean resultOnly) {
+		int minX = Math.min(pos1.getX(), pos2.getX());
+		int minY = Math.min(pos1.getY(), pos2.getY());
+		int minZ = Math.min(pos1.getZ(), pos2.getZ());
+		int maxX = Math.max(pos1.getX(), pos2.getX());
+		int maxY = Math.max(pos1.getY(), pos2.getY());
+		int maxZ = Math.max(pos1.getZ(), pos2.getZ());
+
+		int successCount = 0;
+		int faildCount = 0;
+
+		for (int x = minX; x <= maxX; x++) {
+			for (int y = minY; y <= maxY; y++) {
+				for (int z = minZ; z <= maxZ; z++) {
+					BlockPos currentPos = new BlockPos(x, y, z);
+					if(world.getBlockEntity(currentPos) instanceof CreakingHeartBlockEntity) {
+						ResinSpawnData data = (findResinGenerationPos(world, currentPos, times, resultOnly));
+						successCount += data.success;
+						faildCount += data.failed;
+					}
+				}
+			}
+		}
+		int total = successCount+faildCount;
+		log(world, Text.translatable("log.generation_summary",total, successCount, faildCount).formatted(Formatting.ITALIC), false, true);
+	}
+	private ResinSpawnData findResinGenerationPos(World world, BlockPos p, int times, Boolean resultOnly) {
+		ResinSpawnData data = new ResinSpawnData();
 		for(int i = 0; i<times;i++) {
 			BlockPos blockPos = p;
 
@@ -148,12 +214,14 @@ public class ResinLogger implements ModInitializer {
 			});
 
 			if (mutable.getValue() == null) {
+				data.failed++;
 				log(world, Text.translatable("log.generation_failed").formatted(Formatting.RED).formatted(Formatting.BOLD), false,true);
 			}else{
-				log(world,Text.translatable("log.generation_successed").formatted(Formatting.GREEN).formatted(Formatting.BOLD), false, resultOnly);
+				data.success++;
+				log(world,Text.translatable("log.generation_success").formatted(Formatting.GREEN).formatted(Formatting.BOLD), false, resultOnly);
 			}
 		}
-		return 1;
+		return data;
 	}
 
 

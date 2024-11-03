@@ -10,5 +10,6 @@
   "log.block_prevented_generation": "x The block at %s (%s) prevented generation. Generation failed, continuing.",
   "log.attempt_separator": " |--------------------------------------|",
   "log.generation_failed": "x Generation failed this time!",
-  "log.generation_successed": "√ Generation successed!"
+  "log.generation_success": "x Generation failed this time!",
+  "log.generation_summary": "- Tried %s times and generated %s resin and %s resin failed to generate."
 }
