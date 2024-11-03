@@ -58,7 +58,7 @@ public class ResinLogger implements ModInitializer {
 
 	private void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
 		// 注册命令 `/broadcast`
-		dispatcher.register(CommandManager.literal("simulateSpawnResin")
+		dispatcher.register(CommandManager.literal("simulateGenerateResin")
 				.then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
 						.executes(
 								context -> {
