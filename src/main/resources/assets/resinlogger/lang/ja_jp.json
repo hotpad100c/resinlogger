@@ -1,0 +1,14 @@
+{
+  "log.detect_start": "？%s から検出を開始します。",
+  "log.check_surrounding_blocks": "？%s 周辺のブロックが (ぺールオークの原木) に属しているか確認して、樹脂を生成します。",
+  "log.success_block_found": "√ %s にあるブロックは (ぺールオークの原木) に属しています。試行リストに追加されました。",
+  "log.failure_no_blocks_found": "× %s 周辺には (ぺールオークの原木) に属するブロックが見つかりませんでした。生成失敗。",
+  "log.not_part_of_tag": "！%s のブロックは (ぺールオークの原木) に属しておらず、%s です。生成失敗、続行します。",
+  "log.separator": " <------------------------>",
+  "log.air_block_found": "√ %s のブロックは空気です：生成可能。",
+  "log.resin_generated": "√ %s に樹脂が生成されました：%s。",
+  "log.block_prevented_generation": "× %s のブロック (%s) が生成を妨げました。生成失敗、続行します。",
+  "log.attempt_separator": " |--------------------------------------|",
+  "log.generation_failed": "× 今回の生成は失敗しました！",
+  "log.generation_successed": "√ 今回の生成は成功しました!"
+}

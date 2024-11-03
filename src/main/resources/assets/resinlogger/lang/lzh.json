@@ -1,0 +1,14 @@
+{
+  "log.detect_start": "？ |自 %s 始察。",
+  "log.check_surrounding_blocks": "？ 察位于 %s 周遭之塊，若屬 (縞柞樁)，则以産樹脂。",
+  "log.success_block_found": "√ 位于 %s 之塊为 (縞柞樁)，已納入試産之列。",
+  "log.failure_no_blocks_found": "× %s 周遭之塊皆非 (縞柞樁) 也，不可以産樹脂。",
+  "log.not_part_of_tag": "！位于 %s 之塊非 (縞柞樁) 也，實為 %s。不可以産樹脂，復繼之。",
+  "log.separator": " <------------------------>",
+  "log.air_block_found": "√ %s 可以産樹脂。",
+  "log.resin_generated": "√ 樹脂已於 %s 成：%s。",
+  "log.block_prevented_generation": "× 位于 %s 之塊 (%s) 阻樹脂，欲産而不成，復繼之。",
+  "log.attempt_separator": " |--------------------------------------|",
+  "log.generation_failed": "× 欲産樹脂而未能成！",
+  "log.generation_successed": "√ 樹脂已産成!"
+}

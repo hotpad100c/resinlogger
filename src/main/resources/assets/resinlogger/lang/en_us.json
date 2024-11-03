@@ -1,0 +1,14 @@
+{
+  "log.detect_start": "? Starting detection from %s.",
+  "log.check_surrounding_blocks": "? Checking if the blocks around %s are part of (PALE_OAK_LOGS) for resin generation.",
+  "log.success_block_found": "√ The block at %s is part of (PALE_OAK_LOGS). Added to attempt queue.",
+  "log.failure_no_blocks_found": "x No blocks around %s are part of (PALE_OAK_LOGS). Generation failed.",
+  "log.not_part_of_tag": "! The block at %s is not part of (PALE_OAK_LOGS), but %s. Generation failed, continuing.",
+  "log.separator": " <------------------------>",
+  "log.air_block_found": "√ The block at %s is air: can generate.",
+  "log.resin_generated": "√ Resin generated at %s: %s.",
+  "log.block_prevented_generation": "x The block at %s (%s) prevented generation. Generation failed, continuing.",
+  "log.attempt_separator": " |--------------------------------------|",
+  "log.generation_failed": "x Generation failed this time!",
+  "log.generation_successed": "√ Generation successed!"
+}

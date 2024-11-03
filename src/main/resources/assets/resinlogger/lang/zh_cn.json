@@ -1,0 +1,14 @@
+{
+  "log.detect_start": "？从 %s 开始检测。",
+  "log.check_surrounding_blocks": "？检测 %s 周围的方块是否属于 (苍白橡木原木) 以生成树脂。",
+  "log.success_block_found": "√ 位于 %s 的方块属于 (苍白橡木原木)，已加入尝试队列。",
+  "log.failure_no_blocks_found": "× 未在 %s 周围找到属于 (苍白橡木原木) 的方块，生成失败。",
+  "log.not_part_of_tag": "！位于 %s 的方块不是 (苍白橡木原木)，而是 %s。生成失败，继续。",
+  "log.separator": " <------------------------>",
+  "log.air_block_found": "√ 位于 %s 的方块是空气：可以生成。",
+  "log.resin_generated": "√ 已在 %s 生成树脂：%s。",
+  "log.block_prevented_generation": "× 位于 %s 的方块 (%s) 阻止了生成，生成失败，继续。",
+  "log.attempt_separator": " |--------------------------------------|",
+  "log.generation_failed": "× 这次生成失败了！",
+  "log.generation_successed": "√ 这次生成成功了!"
+}

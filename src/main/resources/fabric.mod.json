@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "resinlogger",
+	"version": "${version}",
+	"name": "ResinLogger",
+	"description": "Simulate resin spawning",
+	"authors": [
+		"Ryan100c"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/resinlogger/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"mypals.ml.ResinLogger"
+		],
+		"fabric-datagen": [
+			"mypals.ml.ResinLoggerDataGenerator"
+		]
+	},
+	"mixins": [
+		"resinlogger.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21.3",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
