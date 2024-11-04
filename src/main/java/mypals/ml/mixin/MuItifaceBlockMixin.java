@@ -6,6 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MultifaceBlock;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.BooleanProperty;
@@ -23,10 +24,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import static net.minecraft.block.MultifaceBlock.getProperty;
 import static net.minecraft.block.MultifaceBlock.hasDirection;
 
-//Useless :)
-//Useless :)
-//Useless :)
-//Useless :)
 @Mixin(MultifaceBlock.class)
 public class MuItifaceBlockMixin {
 	@Final

@@ -7,6 +7,7 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.minecraft.block.Block;
@@ -31,21 +32,16 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+
 public class ResinLogger implements ModInitializer {
 	public static final String MOD_ID = "resinlogger";
 	public static MinecraftServer server;
-
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final GameRules.Key<GameRules.BooleanRule> RESIN_DROP_FIX =
 			GameRuleRegistry.register("multifaceResinDropIssueFix", GameRules.Category.DROPS, GameRuleFactory.createBooleanRule(true));
 	@Override
 	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			ResinLogger.server = server;
 		});
@@ -64,7 +60,7 @@ public class ResinLogger implements ModInitializer {
 								context -> {
 									findResinGenerationPos(context.getSource().getWorld(),
 											BlockPosArgumentType.getBlockPos(context,"pos"),
-											context.getSource().getWorld().random.nextBetween(2, 3),
+											-1,
 											false);
 									return 1;
 								})
@@ -73,7 +69,7 @@ public class ResinLogger implements ModInitializer {
 										context -> {
 											findResinGenerationPos(context.getSource().getWorld(),
 													BlockPosArgumentType.getBlockPos(context,"pos"),
-													context.getSource().getWorld().random.nextBetween(2, 3),
+													-1,
 													BoolArgumentType.getBool(context,"resultOnly"));
 											return 1;
 										})
@@ -108,7 +104,7 @@ public class ResinLogger implements ModInitializer {
 									World world = source.getWorld();
 									BlockPos pos1 = BlockPosArgumentType.getBlockPos(context, "pos1");
 									BlockPos pos2 = BlockPosArgumentType.getBlockPos(context, "pos2");
-									findResinGenerationPosArea(world, pos1, pos2, context.getSource().getWorld().random.nextBetween(2, 3), true);
+									findResinGenerationPosArea(world, pos1, pos2, -1, true);
 
 									return 1;
 								})
@@ -118,7 +114,7 @@ public class ResinLogger implements ModInitializer {
 											World world = source.getWorld();
 											BlockPos pos1 = BlockPosArgumentType.getBlockPos(context, "pos1");
 											BlockPos pos2 = BlockPosArgumentType.getBlockPos(context, "pos2");
-											int count = context.getSource().getWorld().random.nextBetween(2, 3);
+											int count = -1;
 											Boolean resultOnly = BoolArgumentType.getBool(context,"resultOnly");
 											findResinGenerationPosArea(world, pos1, pos2, count, resultOnly);
 											return 1;
@@ -156,8 +152,7 @@ public class ResinLogger implements ModInitializer {
 
 
 	public static void log(World world, Text text, boolean overlay, boolean display) {
-		if(server == null){return;}
-		if(!display){return;};
+		if(!display){return;}
 		world.getPlayers().forEach(player -> player.sendMessage(text, overlay));
 
 	}
@@ -172,24 +167,28 @@ public class ResinLogger implements ModInitializer {
 		int successCount = 0;
 		int faildCount = 0;
 
+		ArrayList<BlockPos> hearts = new ArrayList<>();
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
 					if(world.getBlockEntity(currentPos) instanceof CreakingHeartBlockEntity) {
-						ResinSpawnData data = (findResinGenerationPos(world, currentPos, times, resultOnly));
-						successCount += data.success;
-						faildCount += data.failed;
+						hearts.add(currentPos);
 					}
 				}
 			}
+		}
+		for(Object heartPos : Util.copyShuffled(hearts.toArray(), world.random)) {
+			ResinSpawnData data = (findResinGenerationPos(world, (BlockPos) heartPos, times, resultOnly));
+			successCount += data.success;
+			faildCount += data.failed;
 		}
 		int total = successCount+faildCount;
 		log(world, Text.translatable("log.generation_summary",total, successCount, faildCount).formatted(Formatting.ITALIC), false, true);
 	}
 	private ResinSpawnData findResinGenerationPos(World world, BlockPos p, int times, Boolean resultOnly) {
 		ResinSpawnData data = new ResinSpawnData();
-		for(int i = 0; i<times;i++) {
+		for(int i = 0; i < (times > 0? times : world.random.nextBetween(2,3));i++) {
 			BlockPos blockPos = p;
 
 			Mutable<BlockPos> mutable = new MutableObject<>(null);
