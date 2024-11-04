@@ -7,6 +7,8 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -22,6 +24,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -30,13 +33,14 @@ import org.slf4j.LoggerFactory;
 
 public class ResinLogger implements ModInitializer {
 	public static final String MOD_ID = "resinlogger";
-	private static MinecraftServer server;
+	public static MinecraftServer server;
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-
+	public static final GameRules.Key<GameRules.BooleanRule> RESIN_DROP_FIX =
+			GameRuleRegistry.register("multifaceResinDropIssueFix", GameRules.Category.DROPS, GameRuleFactory.createBooleanRule(true));
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
@@ -60,10 +64,20 @@ public class ResinLogger implements ModInitializer {
 								context -> {
 									findResinGenerationPos(context.getSource().getWorld(),
 											BlockPosArgumentType.getBlockPos(context,"pos"),
-											1,
+											context.getSource().getWorld().random.nextBetween(2, 3),
 											false);
 									return 1;
 								})
+						.then(CommandManager.argument("resultOnly", BoolArgumentType.bool())
+								.executes(
+										context -> {
+											findResinGenerationPos(context.getSource().getWorld(),
+													BlockPosArgumentType.getBlockPos(context,"pos"),
+													context.getSource().getWorld().random.nextBetween(2, 3),
+													BoolArgumentType.getBool(context,"resultOnly"));
+											return 1;
+										})
+						)
 						.then(CommandManager.argument("count", IntegerArgumentType.integer())
 								.executes(
 										context -> {
@@ -94,10 +108,22 @@ public class ResinLogger implements ModInitializer {
 									World world = source.getWorld();
 									BlockPos pos1 = BlockPosArgumentType.getBlockPos(context, "pos1");
 									BlockPos pos2 = BlockPosArgumentType.getBlockPos(context, "pos2");
-									findResinGenerationPosArea(world, pos1, pos2, 1, true);
+									findResinGenerationPosArea(world, pos1, pos2, context.getSource().getWorld().random.nextBetween(2, 3), true);
 
 									return 1;
 								})
+								.then(CommandManager.argument("resultOnly", BoolArgumentType.bool())
+										.executes(context -> {
+											ServerCommandSource source = context.getSource();
+											World world = source.getWorld();
+											BlockPos pos1 = BlockPosArgumentType.getBlockPos(context, "pos1");
+											BlockPos pos2 = BlockPosArgumentType.getBlockPos(context, "pos2");
+											int count = context.getSource().getWorld().random.nextBetween(2, 3);
+											Boolean resultOnly = BoolArgumentType.getBool(context,"resultOnly");
+											findResinGenerationPosArea(world, pos1, pos2, count, resultOnly);
+											return 1;
+										})
+								)
 								.then(CommandManager.argument("count", IntegerArgumentType.integer())
 										.executes(context -> {
 											ServerCommandSource source = context.getSource();

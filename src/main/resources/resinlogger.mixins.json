@@ -3,7 +3,7 @@
 	"package": "mypals.ml.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-      "CreakingHeartBlockEntityMixin"
+      "MuItifaceBlockMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
